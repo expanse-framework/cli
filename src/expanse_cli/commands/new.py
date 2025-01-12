@@ -14,5 +14,21 @@ class NewCommand(Command):
         argument("path", "The path where the new project will be created.")
     ]
 
+    REPOSITORY_URL = "https://github.com/expanse-framework/app.git"
+
     def handle(self) -> int:
+        self.line(r"""<fg=blue>
+███████╗██╗  ██╗██████╗  █████╗ ███╗   ██╗███████╗███████╗
+██╔════╝╚██╗██╔╝██╔══██╗██╔══██╗████╗  ██║██╔════╝██╔════╝
+█████╗   ╚███╔╝ ██████╔╝███████║██╔██╗ ██║███████╗█████╗
+██╔══╝   ██╔██╗ ██╔═══╝ ██╔══██║██║╚██╗██║╚════██║██╔══╝
+███████╗██╔╝ ██╗██║     ██║  ██║██║ ╚████║███████║███████╗
+╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝
+</>""")
+        path = self.argument("path")
+
+        from copier import run_copy
+
+        run_copy("../app", path)
+
         return 0
