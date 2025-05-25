@@ -8,8 +8,19 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-cleo = "^2.1.0"
-copier = "^9.4.1"
+cleo = ">=2.1.0"
+copier = ">=9.4.1"
+
+
+[tool.poetry.group.lint]
+optional = true
+
+[tool.poetry.group.lint.dependencies]
+mypy = ">=1.11.2"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=8.3.5"
 
 [tool.poetry.scripts]
 expanse = "expanse_cli.main:run"

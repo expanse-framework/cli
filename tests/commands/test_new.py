@@ -1,42 +1,32 @@
-from typing import ClassVar
+from pathlib import Path
 
-from cleo.commands.command import Command
-from cleo.helpers import argument
-from cleo.io.inputs.argument import Argument
+from cleo.testers.command_tester import CommandTester
+
+from expanse_cli.main import app
 
 
-class NewCommand(Command):
-    name: str = "new"
+def test_new_command(tmp_path: Path) -> None:
+    """
+    The new command creates a new expanse project.
+    """
+    command = app.find("new")
+    tester = CommandTester(command)
 
-    description = "Create a new Expanse project."
+    assert tester.execute(str(tmp_path)) == 0
 
-    arguments: ClassVar[list[Argument]] = [
-        argument("path", "The path where the new project will be created.")
-    ]
+    output = tester.io.fetch_output()
 
-    REPOSITORY_URL = "https://github.com/expanse-framework/app.git"
-
-    def handle(self) -> int:
-        self.line(r"""<fg=blue>
+    assert (
+        output
+        == f"""
 ███████╗██╗  ██╗██████╗  █████╗ ███╗   ██╗███████╗███████╗
 ██╔════╝╚██╗██╔╝██╔══██╗██╔══██╗████╗  ██║██╔════╝██╔════╝
 █████╗   ╚███╔╝ ██████╔╝███████║██╔██╗ ██║███████╗█████╗
 ██╔══╝   ██╔██╗ ██╔═══╝ ██╔══██║██║╚██╗██║╚════██║██╔══╝
 ███████╗██╔╝ ██╗██║     ██║  ██║██║ ╚████║███████║███████╗
 ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝
-</>""")
-        path = self.argument("path")
 
-        from copier import run_copy
-
-        self.write(
-            f"<fg=blue>•</> Creating a new Expanse project at <comment>{path}</comment>..."
-        )
-
-        run_copy(self.REPOSITORY_URL, path, vcs_ref="HEAD", quiet=True)
-
-        self.overwrite(
-            f"<fg=green>•</> Created a new Expanse project at <comment>{path}</comment>.\n"
-        )
-
-        return 0
+• Creating a new Expanse project at {tmp_path}...\x1b[1G\x1b[2K\
+• Created a new Expanse project at {tmp_path}.
+"""
+    )
